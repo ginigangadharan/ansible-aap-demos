@@ -6,20 +6,29 @@ ansible-navigator:
     #image: automationhub22-1.lab.local/ee-29-rhel8:latest
     enabled: false
     pull:
+      policy: missing
       arguments:
         - "--tls-verify=false"
-
-  playbook-artifact:
-    save-as: /home/devops/playbook-artifacts/{playbook_name}-artifact-{ts_utc}.json
+    # volume-mounts:
+    #   - dest: /tmp/reports
+    #     options: Z
+    #     src: /tmp/reports
+    #   - dest: /cmdb-reports
+    #     options: Z
+    #     src: ./web
 
   logging:
-    level: debug
+    level: normal
+    append: False
+    file: ansible-navigator.log
+
+  mode: stdout
 
   editor:
     command: code-server {filename}
     console: false
 
   playbook-artifact:
-    enable: True
+    enable: false
     replay: artifacts/ansible_artifact.json
-    save-as: artifacts/ansible_artifact.json
+    save-as: /home/devops/playbook-artifacts/{playbook_name}-artifact-{ts_utc}.json

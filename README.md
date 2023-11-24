@@ -39,7 +39,7 @@ ignore_certs = True
 
 ## Configuring Authentication
 
-- To pull collections from Ansible Galaxy, you do not required an authentication usually.
+- To pull collections from Ansible Galaxy, you do not require authentication usually.
 - To pull collections from Red Hat Automation Hub or Private Automation Hub (On-premise), You need to pass the credential.
 
 ### Method 1: Keep Galaxy Token in the `ansible.cfg`
@@ -91,6 +91,30 @@ Running command:
   podman build -f context/Containerfile -t custom-ee-pah:1.0 context
 Complete! The build context can be found at: /home/iamgini/ansible/ansible-aap-demos/context
 ```
+
+### Building EEs with environment variables for Galaxy configuration
+
+You can add additional environment variables and arguments as follows. 
+
+```yaml
+.
+.
+additional_build_steps:
+  prepend_galaxy:
+    - ENV ANSIBLE_GALAXY_SERVER_LIST=pah_community,rh_certified
+    - ARG ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_TOKEN
+    - ARG ANSIBLE_GALAXY_SERVER_PAH_COMMUNITY_TOKEN
+```
+
+And you need to pass the same while building the container as follows.
+
+```shell
+$ ansible-builder build -f execution-environment-v3.yml \
+  -t test:v1 \
+  --build-arg ANSIBLE_GALAXY_SERVER_PAH_COMMUNITY_TOKEN \
+  --build-arg ANSIBLE_GALAXY_SERVER_RH_CERTIFIED_TOKEN 
+```
+
 **References**
 
 Find Automation Hub API using the following API endpoint:
@@ -99,3 +123,5 @@ Find Automation Hub API using the following API endpoint:
 
 - [Configuring Red Hat Automation Hub as the primary source for content](https://access.redhat.com/documentation/en-us/red_hat_ansible_automation_platform/1.2/html/getting_started_with_red_hat_ansible_automation_hub/proc-configure-automation-hub-server)
 - [Configuring the ansible-galaxy client](https://docs.ansible.com/ansible/latest/collections_guide/collections_installing.html#configuring-the-ansible-galaxy-client)
+- [Building EEs with environment variables for Galaxy configuration](https://ansible.readthedocs.io/projects/builder/en/latest/scenario_guides/scenario_custom/)
+- [Execution environment definition - Version 3 sample file](https://ansible.readthedocs.io/projects/builder/en/latest/definition/#version-3-format)
